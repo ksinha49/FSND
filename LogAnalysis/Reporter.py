@@ -7,6 +7,7 @@ from datetime import datetime
 
 DBNAME = "news"
 
+
 def get_top3():
     """Return top 3 articles from the 'database'."""
     db = psycopg2.connect(database=DBNAME)
@@ -19,6 +20,7 @@ def get_top3():
     c.execute(query1)
     return c.fetchall()
     db.close()
+
 
 def get_popauth():
     """Returns sorted list of authors based on total views on articles"""
@@ -33,6 +35,7 @@ def get_popauth():
     c.execute(query2)
     return c.fetchall()
     db.close()
+
 
 def get_err():
     """Return error percent crossing 1 percent mark from logs"""
@@ -49,6 +52,7 @@ def get_err():
     c.execute(query2)
     return c.fetchall()
     db.close()
+
 
 def print_view(view, POST):
     print('\n')
@@ -73,6 +77,7 @@ def print_view(view, POST):
             datef = datetime.strftime(output[0], '%b %d, %Y')
             print("  %s" % datef + " --" + " %0.2f %% errors" % output[1])
 
+
 def print_log():
     START = '\033[94m'
     END = '\033[0m'
@@ -82,5 +87,7 @@ def print_log():
     print_view('POPAUTH', get_popauth())
     print_view('ERRPCT', get_err())
     print('\n')
-    print(START +"----------------End of Report---------------------" + END)
+    print(START + "----------------End of Report---------------------" + END)
+
+
 print_log()
