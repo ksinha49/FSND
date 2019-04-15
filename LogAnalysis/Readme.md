@@ -19,7 +19,7 @@ The routine has following functionalities:
      1. Vagrant version 2.2.4 [Click [here](https://www.vagrantup.com/) to install]. 
      2. Vagrant Configuration file to setup the VM. This can be downloaded from [here](https://s3.amazonaws.com/video.udacity-data.com/topher/2018/April/5acfbfa3_fsnd-virtual-machine/fsnd-virtual-machine.zip).
      3. Oracle VM Virtual Box version 5.1.38 [Click [here](https://www.virtualbox.org/wiki/Download_Old_Builds_5_1) to install].
-  - Use Python 3 version for the routine execution  [Click [here](https://www.python.org/downloads/) for installation link].
+  - Use Python 3 version for testing this routine. Click [here](https://www.python.org/downloads/) for installation link on your local machine.   
   - Database file used in this tool can be found in this location [[link](https://d17h27t6h515a5.cloudfront.net/topher/2016/August/57b5f748_newsdata/newsdata.zip)].
   
 ### Virtual Machine setup
@@ -31,6 +31,10 @@ For first time users it will take some time to boot up the VM and installation o
 ```sh
 $ vagrant ssh
 ```
+For installation of Python 3 on Vagrant OS use the following command in the VM
+  ```sh
+  sudo apt-get install python3 python3-pip
+  ```
 NOTE: For Windows users you will need to enable Virtualization in BIOS or UEFI firmware of your local machine prior to running this step or the VM will not boot up.
 Click on [this](https://blogs.technet.microsoft.com/canitpro/2015/09/08/step-by-step-enabling-hyper-v-for-use-on-windows-10/) to learn more on how to enable virtualization on your local machine.
   
