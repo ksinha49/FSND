@@ -8,50 +8,54 @@ from datetime import datetime
 DBNAME = "news"
 
 
-def get_top3():
-    """Return top 3 articles from the 'database'."""
+def execute_query(query):
+    """execute sql queries """
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    query1 = ' '.join(["select distinct A.title,count(distinct L.id)",
-                       "AS pop_cnt from log L ,articles A where A.slug",
-                       "=rtrim(substr(L.path,10,100))",
-                       "group by A.title order by pop_cnt desc limit 3"])
-
-    c.execute(query1)
-    return c.fetchall()
+    c.execute(query)
+    result = c.fetchall()
     db.close()
+    return result
+
+
+def get_top3():
+    """Return top 3 articles from the 'database'."""
+    query1 = """
+             SELECT A.title,count(*)
+             AS pop_cnt FROM log L ,articles A WHERE '/article/' || A.slug
+             = L.path GROUP BY A.title
+             ORDER BY pop_cnt DESC LIMIT 3;
+             """
+    return execute_query(query1)
 
 
 def get_popauth():
     """Returns sorted list of authors based on total views on articles"""
-    db = psycopg2.connect(database=DBNAME)
-    c = db.cursor()
-    query2 = ' '.join(["select distinct AU.name,count(distinct L.id)",
-                       "AS pop_cnt from log L ,articles AR, authors ",
-                       " AU where AR.slug=rtrim(substr(L.path,10,100))",
-                       "and AU.id=AR.author group by AU.name",
-                       "order by pop_cnt desc"])
-
-    c.execute(query2)
-    return c.fetchall()
-    db.close()
+    query2 = """
+             SELECT AU.name,count(*)
+             AS pop_cnt FROM log L ,articles AR, authors
+             AU WHERE AR.slug = rtrim(substr(L.path,10,100))
+             AND AU.id = AR.author GROUP BY AU.name
+             ORDER BY pop_cnt DESC;
+             """
+    return execute_query(query2)
 
 
 def get_err():
     """Return error percent crossing 1 percent mark from logs"""
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
-    query2 = ' '.join(["select CAST(time as DATE) as dt,",
-                       "ROUND(((COUNT(case when status =",
-                       "'404 NOT FOUND' then 1 end)::DECIMAL",
-                       "/count(*)) * 100),2)  from  log group",
-                       "by dt HAVING ((COUNT(case when",
-                       "status = '404 NOT FOUND'then 1 end)",
-                       "::DECIMAL/count(*)) * 100) > 1.00"])
+    query3 = """
+             SELECT CAST(time as DATE) as dt,
+             ROUND(((COUNT(case when status =
+             '404 NOT FOUND' then 1 end)::DECIMAL
+             /count(*)) * 100),2)  FROM  log group
+             by dt HAVING ((COUNT(case when
+             status = '404 NOT FOUND'then 1 end)
+             ::DECIMAL/count(*)) * 100) > 1.00;
+             """
 
-    c.execute(query2)
-    return c.fetchall()
-    db.close()
+    return execute_query(query3)
 
 
 def print_view(view, POST):
@@ -90,4 +94,5 @@ def print_log():
     print(START + "----------------End of Report---------------------" + END)
 
 
-print_log()
+if __name__ == '__main__':
+    print_log()
